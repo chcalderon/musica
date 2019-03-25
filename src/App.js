@@ -1,28 +1,50 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useState, useEffect, Fragment} from 'react';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
+import Formulario from './component/Formulario';
+
+import axios from 'axios';
+
+import Cancion from './component/Cancion';
+
+function App() {
+  // Utilizar useState con 3 states
+  const [artista, agregarArtista] = useState('');
+
+  const [letra, agregarLetra] = useState([]);
+
+  const [info, agregarInfo] = useState({});
+
+  // Metodo para consultar la API de Letras de canciones
+  const consultarApiLetra = async busqueda => {
+      //console.log(busqueda);
+      const {artista, cancion} = busqueda;
+      const url = `https://api.lyrics.ovh/v1/${artista}/${cancion}`;
+      
+      const resultado = await axios(url);
+      
+      //console.log(resultado);
+      agregarLetra(resultado.data.lyrics);
   }
+
+  return (
+    <Fragment>
+      <Formulario consultarApiLetra={consultarApiLetra}/>
+
+      <div className="container mt-5">
+        <div className="row">
+          <div className="col-md-5">
+          
+          </div>
+          <div className="col-md-5">
+            <Cancion 
+              letra={letra}
+            />
+          </div>
+        </div>
+      </div>
+
+    </Fragment>
+    )
 }
 
 export default App;
